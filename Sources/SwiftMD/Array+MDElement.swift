@@ -1,29 +1,23 @@
-//  Created by Axel Ancona Esselmann on 6/18/24.
+//  Created by Axel Ancona Esselmann on 6/20/24.
 //
 
 import Foundation
 
-public struct McDocument {
-    public var elements: [MdElement] = []
-
-    public init(elements: [MdElement] = []) {
-        self.elements = elements
+public extension Array where Element == MdElement {
+    mutating func append(_ text: String) {
+        append(.init(stringValue: text, mdType: .body))
     }
 
-    public mutating func append(_ text: String) {
-        elements.append(.init(stringValue: text, mdType: .body))
+    mutating func append(_ text: String, _ type: MdElementType = .body) {
+        append(.init(stringValue: text, mdType: type))
     }
 
-    public mutating func append(_ text: String, _ type: MdElementType = .body) {
-        elements.append(.init(stringValue: text, mdType: type))
+    mutating func appendRule() {
+        append(.init(stringValue: "", mdType: .rule))
     }
 
-    public mutating func appendRule() {
-        elements.append(.init(stringValue: "", mdType: .rule))
-    }
-
-    public var content: String {
-        elements.map {
+    var mdContent: String {
+        map {
             switch $0.mdType {
             case .header(let size):
                 return $0.stringValue.h(size)
